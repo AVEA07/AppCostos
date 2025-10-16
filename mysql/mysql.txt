@@ -1,0 +1,99 @@
+docker run --name dbsigecomysql \
+-e MYSQL_ROOT_PASSWORD=citcosto2025 \
+-e MYSQL_DATABASE=SIGECO \
+-e MYSQL_USER=practicante \
+-e MYSQL_PASSWORD=Angel2007 \
+-p 3306:3306 \
+-d mysql:8.0
+
+docker run --name dbsigecomysql
+-e MYSQL_ROOT_PASSWORD=citcosto2025
+-e MYSQL_DATABASE=SIGECO
+-e MYSQL_USER=practicante
+-e MYSQL_PASSWORD=Angel2007
+-p 3306:3306
+-d mysql:8.0
+
+# Creacion de contenedor mysql
+docker run --name dbsigecomysql -e MYSQL_ROOT_PASSWORD=citcostos2025 -e MYSQL_DATABASE=SIGECO -e MYSQL_USER=practicante -e MYSQL_PASSWORD=Angel2007 -p 3306:3306 -d mysql:8.0
+
+# Entrar al contenedor MySQL
+docker exec -it dbsigecomysql mysql -upracticante -pAngel2007 SIGECO
+
+databases: SIGECO;
+user: practicante;
+password: Angel2007;
+
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    usuario VARCHAR(50) UNIQUE NOT NULL,
+    contrasena VARCHAR(255) NOT NULL,
+    rango_id INT,
+    correo VARCHAR(100),
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (rango_id) REFERENCES rangos(id)
+); 
+
+CREATE TABLE rangos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_rango VARCHAR(50) NOT NULL,
+    nivel INT NOT NULL
+); 
+
+CREATE TABLE proyectos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    usuario_id INT,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+); 
+
+CREATE TABLE costos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    proyecto_id INT,
+    nombre_modulo VARCHAR(100),
+    complejidad ENUM('baja', 'media', 'alta'),
+    horas_estimadas DECIMAL(10,2),
+    costo_por_hora DECIMAL(10,2),
+    costo_total DECIMAL(10,2) GENERATED ALWAYS AS (horas_estimadas * costo_por_hora) STORED,
+    FOREIGN KEY (proyecto_id) REFERENCES proyectos(id)
+); 
+
+CREATE TABLE historial (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT,
+    accion VARCHAR(255),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+INSERT INTO rangos (nombre_rango, nivel) VALUES
+('Soldado de Primera',1),
+('Cabo',2),
+('Sargento Segundo',3),
+('Sargento Primero',4),
+('Argento Tecnico',5),
+('Sargento Mayor',6),
+('Subteniente',7),
+('Teniente',8),
+('Capitan Segundo',9),
+('Capitan Primero',10),
+('Mayor',11),
+('Teniente Coronel',12),
+('Coronel',13),
+('General de Brigada',14),
+('General de Division',15);
+
+INSERT INTO usuarios(nombre,usuario, contrasena, rango_id, correo)
+VALUES ('Angel Emanuel Villafuerte Azanon','Practicante','practicante2025',2,'angelvillaz456@gmail.com');
+
+INSERT INTO proyectos(nombre, descripcion, usuario_id)
+VALUES ('SIGECO','Aplicacion creda con el proposito de facilitar los costos de un proyecto',1);
+
+INSERT INTO costos(proyecto_id,nombre_modulo,complejidad,horas_estimadas,costo_por_hora)
+VALUES (1,'SIGECO','media',80,130);
+
+INSERT INTO historial (usuario_id, accion)
+VALUES (1,'ingreso de presupuesto de aplicacion');
