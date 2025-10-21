@@ -6,36 +6,66 @@ package InicioSesion;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.sql.*;
+import org.mindrot.jbcrypt.BCrypt;
 import Interfaz.Principal;
 /**
  *
  * @author practicante
  */
 public class Acceder extends JFrame implements ActionListener{
-    Container contenedor ;
-    JButton ingresar, cancelar;
+    private Container contenedor ;
+    private JTextField campoUsuario;
+    private JPasswordField campoContraseña;
+    private JButton ingresar, cancelar;
+    private Connection conexion;
     
     public Acceder(){
         setTitle("Inicio de Sesion");
-        setSize(600,400);
-        inicio();
-        //setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(400,250);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        conectarDB();
+        inicio();
     }
     
-    public void inicio(){
+    private void conectarDB(){
+        try{
+            String url = "jdbc:mysql://localhost:3306/SIGECO";
+            String user = "practicante";
+            String pass = "Angel2007";
+            conexion = DriverManager.getConnection(url,user,pass);
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(this, "Error al ocnectar con la base de datos" + ex.getMessage());
+            System.exit(0);
+        }
+    }
+    
+    private void inicio(){
         contenedor = getContentPane();
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5,5,5,5);
+        c.fill = GridBagConstraints.HORIZONTAL;
         
-        c.gridy = 0; c.gridx = 0; c.gridwidth = 2; c.gridheight = 1;
-        JPanel panelTitulo = new JPanel();
-        JLabel titulo = new JLabel("Inicie sesión con su usuario");
-        panelTitulo.add(titulo,c);
-        contenedor.add(panelTitulo,c);
+        c.gridy = 0; c.gridx = 0; c.gridwidth = 2;
+        JLabel titulo = new JLabel("Inicie sesión con su usuario",SwingConstants.CENTER);
+        titulo.setFont(new Font("Arial",Font.BOLD,16));
+        contenedor.add(titulo,c);
         
-        c.gridy = 1;
+        c.gridwidth = 1;c.gridy = 1;
+        contenedor.add(new JLabel ("Usuario"),c);
+        c.gridx = 1;
+        campoUsuario = new JTextField(15);
+        contenedor.add(campoUsuario,c);
+        
+        c.gridy = 2; c.gridx = 0;
+        contenedor.add(new JLabel("Contraseña"),c);
+        c.gridx = 1;
+        campoContraseña = new JPasswordField(15);
+        contenedor.add(campoContraseña,c);
+        
+        c.gridy = 3;
         JPanel panelBotones = new JPanel();
         ingresar = new JButton("Ingresar");
         ingresar.addActionListener(this);
@@ -55,9 +85,43 @@ public class Acceder extends JFrame implements ActionListener{
         }
         
         if(e.getSource() == ingresar){
-            Principal pr = new Principal();
-            pr.setVisible(true);
-            this.dispose();
+            validarUsuario();
+        }
+    }
+    
+    private void validarUsuario(){
+        String usuario = campoUsuario.getText().trim();
+        String contrasena = new String(campoContraseña.getPassword());
+        
+        if(usuario.isEmpty() || contrasena.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Completar todos los campos");
+            return;
+        }
+        
+        try{
+            String sql = "SELECT contrasena FROM usuarios WHERE usuario = ?";
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.setString(1, usuario);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()){
+                String hash = rs.getString("contrasena");
+                if(BCrypt.checkpw(contrasena, hash)){
+                    JOptionPane.showMessageDialog(this,"Inicio de Sesión exitoso");
+                    Principal pr = new Principal();
+                    pr.setVisible(true);
+                    this.dispose();
+                }else{
+                    JOptionPane.showMessageDialog(this, "Contraseña incorrecta","Error",JOptionPane.ERROR_MESSAGE);
+                }
+            }else{
+                JOptionPane.showMessageDialog(this, "Usuario no encontrado","Error",JOptionPane.ERROR_MESSAGE);
+            }
+            
+            rs.close();
+            ps.close();
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(this, "Error al validar usuario: " + ex.getMessage());
         }
     }
 }

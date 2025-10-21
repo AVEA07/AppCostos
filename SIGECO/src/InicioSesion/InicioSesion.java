@@ -8,8 +8,8 @@ import javax.swing.*;
  * @author practicante
  */
 public class InicioSesion extends JFrame implements ActionListener{
-    Container contenedor ;
-    JButton acceder, registrar;
+    private Container contenedor ;
+    private JButton acceder, registrar;
     
     public InicioSesion(){
         setTitle("Inicio de Sesión");
@@ -20,7 +20,7 @@ public class InicioSesion extends JFrame implements ActionListener{
         //setVisible(true);
     }
     
-    public void inicio(){
+    private void inicio(){
         contenedor = getContentPane();
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();

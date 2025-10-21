@@ -11,10 +11,10 @@ import Interfaz.*;
  */
 public class Start {
     public static void main(String[] args) {
-        Principal pr = new Principal();
-        pr.setVisible(true);
+        //Principal pr = new Principal();
+        //pr.setVisible(true);
         
-        //InicioSesion is = new InicioSesion();
-        //is.setVisible(true);
+        InicioSesion is = new InicioSesion();
+        is.setVisible(true);
     }
 }

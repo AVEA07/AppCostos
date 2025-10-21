@@ -82,15 +82,11 @@ public class CalculadoraCostos extends JFrame implements ActionListener {
                 int cantidad = Integer.parseInt(campoCantidad.getText().trim());
                 double horas = Double.parseDouble(campoHoras.getText().trim());
                 double tarifa = Double.parseDouble(campoTarifa.getText().trim());
-
-                // Aquí puedes añadir reglas por tipo/tecnología si quieres multiplicadores
-                // por ejemplo: si Senior + Java -> tarifa *= 1.1; o ajustar horas.
+                
                 String tipo = (String) tipoBox.getSelectedItem();
                 String tech = (String) techBox.getSelectedItem();
-
-                // Ejemplo de ajuste simple (personalizable):
+                
                 if ("Senior".equals(tipo) && "Java".equals(tech)) {
-                    // supongamos que para senior-java se estiman 10% más horas de integración
                     horas = horas * 1.10;
                 }
 

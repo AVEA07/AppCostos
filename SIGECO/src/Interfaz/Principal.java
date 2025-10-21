@@ -33,7 +33,7 @@ public class Principal extends JFrame implements ActionListener{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    public void inicio(){
+    private void inicio(){
         contenedor = getContentPane();
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -66,9 +66,8 @@ public class Principal extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == cerrarSesion){
-            InicioSesion is = new InicioSesion();
-            is.setVisible(true);
-            this.dispose();
+            CierreSesion ci = new CierreSesion();
+            ci.setVisible(true);
         }
         
         if(e.getSource() == calcularCostos){
