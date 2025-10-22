@@ -24,6 +24,12 @@ public class CalculadoraCostos extends JFrame implements ActionListener {
         setTitle("Calculadora de Costos");
         setSize(500, 350);
         setLocationRelativeTo(null);
+        setResizable(false);
+        
+        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
+        Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+        setIconImage(iconoEscalado);
+        
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         inicio();
     }
@@ -91,9 +97,9 @@ public class CalculadoraCostos extends JFrame implements ActionListener {
                 }
 
                 double total = cantidad * horas * tarifa;
-                String detalle = String.format("Detalle: %d x %.2f h x %.2f USD = %.2f USD", cantidad, horas, tarifa, total);
+                //String detalle = String.format("Detalle: %d x %.2f h x %.2f USD = %.2f USD", cantidad, horas, tarifa, total);
                 resultadoLabel.setText("Total: " + String.format("%.2f USD", total));
-                JOptionPane.showMessageDialog(this, detalle, "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                //JOptionPane.showMessageDialog(this, detalle, "Resultado", JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Introduce números válidos en cantidad/horas/tarifa", "Error", JOptionPane.ERROR_MESSAGE);
             }

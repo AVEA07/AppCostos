@@ -21,12 +21,18 @@ public class Acceder extends JFrame implements ActionListener{
     private Connection conexion;
     
     public Acceder(){
-        setTitle("Inicio de Sesion");
+        setTitle("Inicio de Sesión");
         setSize(400,250);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
+        
+        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
+        Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+        setIconImage(iconoEscalado);
+        
         conectarDB();
         inicio();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
     
     private void conectarDB(){
@@ -99,7 +105,7 @@ public class Acceder extends JFrame implements ActionListener{
         }
         
         try{
-            String sql = "SELECT contrasena FROM usuarios WHERE usuario = ?";
+            String sql = "SELECT id, usuario, contrasena FROM usuarios WHERE usuario = ?";
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setString(1, usuario);
             ResultSet rs = ps.executeQuery();
@@ -107,11 +113,14 @@ public class Acceder extends JFrame implements ActionListener{
             if(rs.next()){
                 String hash = rs.getString("contrasena");
                 if(BCrypt.checkpw(contrasena, hash)){
+                    // Obtenemos el nombre del usuario
+                    String nombreUsuario = rs.getString("usuario");
+                    int idUsuarios = rs.getInt("id");
                     JOptionPane.showMessageDialog(this,"Inicio de Sesión exitoso");
-                    Principal pr = new Principal();
+                    Principal pr = new Principal(nombreUsuario ,conexion, idUsuarios);
                     pr.setVisible(true);
                     this.dispose();
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(this, "Contraseña incorrecta","Error",JOptionPane.ERROR_MESSAGE);
                 }
             }else{

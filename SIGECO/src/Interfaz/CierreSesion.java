@@ -15,11 +15,19 @@ import InicioSesion.InicioSesion;
 public class CierreSesion extends JFrame implements ActionListener{
     private Container contenedor;
     private JButton aceptar, cancelar;
+    private JFrame ventanaPrincipal;
     
-    public CierreSesion(){
+    public CierreSesion(JFrame ventanaPrincipal){
+        this.ventanaPrincipal = ventanaPrincipal;
         setTitle("");
         setSize(350,250);
         setLocationRelativeTo(null);
+        setResizable(false);
+        
+        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
+        Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+        setIconImage(iconoEscalado);
+        
         inicio();
     }
     
@@ -30,9 +38,17 @@ public class CierreSesion extends JFrame implements ActionListener{
         c.insets = new Insets (5,5,5,5);
         c.fill = GridBagConstraints.HORIZONTAL;
         
-        c.gridy = 0; c.gridx = 0;
-        JLabel titulo = new JLabel("¿Esta Seguro de querer cerrar sesión?");
+        c.gridy = 0; c.gridx = 0; c.anchor = GridBagConstraints.CENTER;
+        JTextArea titulo = new JTextArea("¿Esta Seguro de\nquerer cerrar sesión?");
+        titulo.setEditable(false);
+        titulo.setOpaque(false);
         titulo.setFont(new Font("Arial",Font.BOLD,16));
+        titulo.setFocusable(false);
+        titulo.setHighlighter(null);
+        titulo.setLineWrap(true);
+        titulo.setWrapStyleWord(true);  
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titulo.setAlignmentY(Component.CENTER_ALIGNMENT);
         contenedor.add(titulo,c);
         
         c.gridy = 1;
@@ -49,9 +65,8 @@ public class CierreSesion extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == aceptar){
-            Principal pr = new Principal();
             InicioSesion in = new InicioSesion();
-            pr.dispose();
+            ventanaPrincipal.dispose();
             this.dispose();
             in.setVisible(true);
         }

@@ -100,3 +100,7 @@ INSERT INTO historial (usuario_id, accion)
 VALUES (1,'ingreso de presupuesto de aplicacion');
 
 ALTER TABLE usuarios ADD COLUMN apellido VARCHAR(255) AFTER nombre;
+
+ALTER TABLE costos ADD COLUMN usuarios_id INT AFTER proyecto_id;
+ALTER TABLE costos ADD FOREIGN KEY (usuarios_id) REFERENCES usuarios(id);
+

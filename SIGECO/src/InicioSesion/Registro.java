@@ -28,20 +28,26 @@ public class Registro extends JFrame implements ActionListener{
         setTitle("Registro");
         setSize(600,400);
         setLocationRelativeTo(null);
+        setResizable(false);
+        
+        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
+        Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+        setIconImage(iconoEscalado);
+        
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         conectarDB();
         inicio();
     }
     
     private void conectarDB() {
-        try {
+        try{
             String url = "jdbc:mysql://localhost:3306/SIGECO";
             String user = "practicante";
             String pass = "Angel2007";
             conexion = DriverManager.getConnection(url, user, pass);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos: " + ex.getMessage());
-            System.exit(0);
+            this.dispose();
         }
     }
     
@@ -147,7 +153,7 @@ public class Registro extends JFrame implements ActionListener{
             
             String hash = BCrypt.hashpw(contrasena,BCrypt.gensalt());
             
-            try{
+            try {
                 String sql = "INSERT INTO usuarios(nombre, apellido, usuario, contrasena, rango_id, correo) VALUES (?,?,?,?,?,?)";
                 PreparedStatement ps= conexion.prepareStatement(sql);
                 ps.setString(1, nombre);
