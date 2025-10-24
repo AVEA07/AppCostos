@@ -42,7 +42,7 @@ public class Acceder extends JFrame implements ActionListener{
             String pass = "Angel2007";
             conexion = DriverManager.getConnection(url,user,pass);
         }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, "Error al ocnectar con la base de datos" + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al ocnectar con la base de datos" + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
     }
@@ -100,7 +100,7 @@ public class Acceder extends JFrame implements ActionListener{
         String contrasena = new String(campoContraseña.getPassword());
         
         if(usuario.isEmpty() || contrasena.isEmpty()){
-            JOptionPane.showMessageDialog(this, "Completar todos los campos");
+            JOptionPane.showMessageDialog(null, "Completar todos los campos");
             return;
         }
         
@@ -116,21 +116,20 @@ public class Acceder extends JFrame implements ActionListener{
                     // Obtenemos el nombre del usuario
                     String nombreUsuario = rs.getString("usuario");
                     int idUsuarios = rs.getInt("id");
-                    JOptionPane.showMessageDialog(this,"Inicio de Sesión exitoso");
                     Principal pr = new Principal(nombreUsuario ,conexion, idUsuarios);
                     pr.setVisible(true);
                     this.dispose();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Contraseña incorrecta","Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Contraseña incorrecta","Error",JOptionPane.ERROR_MESSAGE);
                 }
             }else{
-                JOptionPane.showMessageDialog(this, "Usuario no encontrado","Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Usuario no encontrado","Error",JOptionPane.ERROR_MESSAGE);
             }
             
             rs.close();
             ps.close();
         }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, "Error al validar usuario: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al validar usuario: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
         }
     }
 }

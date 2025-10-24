@@ -46,7 +46,7 @@ public class Registro extends JFrame implements ActionListener{
             String pass = "Angel2007";
             conexion = DriverManager.getConnection(url, user, pass);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al conectar con la base de datos: " + ex.getMessage());
             this.dispose();
         }
     }
@@ -124,7 +124,7 @@ public class Registro extends JFrame implements ActionListener{
                 comboRango.addItem(rs.getString("nombre_rango"));
             }
         }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,"Error al cargar Rangos: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null,"Error al cargar Rangos: " + ex.getMessage());
         }
     }
     
@@ -147,7 +147,7 @@ public class Registro extends JFrame implements ActionListener{
             int rangoId = rangoIds.get(comboRango.getSelectedIndex());
             
             if(nombre.isEmpty() || usuario.isEmpty() || correo.isEmpty()){
-                JOptionPane.showMessageDialog(this, "Llenar todos los campos");
+                JOptionPane.showMessageDialog(null, "Llenar todos los campos");
                 return;
             }
             
@@ -164,17 +164,13 @@ public class Registro extends JFrame implements ActionListener{
                 ps.setString(6, correo.isEmpty() ? null : correo);
                 ps.executeUpdate();
                 
-                JOptionPane.showMessageDialog(this, "Usuario Registrado");
+                JOptionPane.showMessageDialog(null, "Usuario Registrado");
                 InicioSesion is = new InicioSesion();
                 is.setVisible(true);
                 this.dispose();
             }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, "Error al registrar usuario: "+ex.getMessage());
+                JOptionPane.showMessageDialog(null, "Error al registrar usuario: "+ex.getMessage());
             }
-            
-            
-            
-            JOptionPane.showMessageDialog(this, "Cuenta Registrada","Information",JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }

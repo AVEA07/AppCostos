@@ -44,7 +44,8 @@ public class Principal extends JFrame implements ActionListener{
         
         inicio();
         //setVisible(true);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        //setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     private void inicio(){
@@ -86,20 +87,21 @@ public class Principal extends JFrame implements ActionListener{
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == cerrarSesion){
-            CierreSesion ci = new CierreSesion(this);
-            ci.setVisible(true);
-        }
-        
-        if(e.getSource() == calcularCostos){
-            CalculadoraCostos cc = new CalculadoraCostos();
-            cc.setVisible(true);
-        }
-        
-        if(e.getSource() == gestionarCostos){
-            GestionCostos gc = new GestionCostos(conexion, usuarioId);
-            gc.setVisible(true);
-        }
+public void actionPerformed(ActionEvent e) {
+    if(e.getSource() == cerrarSesion){
+        CierreSesion ci = new CierreSesion(this);
+        ci.setVisible(true);
     }
+    
+    if(e.getSource() == calcularCostos){
+        // Aquí pasamos null como padre porque no hay ventana GestionCostos abierta
+        CalculadoraCostos cc = new CalculadoraCostos(conexion, usuarioId, null);
+        cc.setVisible(true);
+    }
+    
+    if(e.getSource() == gestionarCostos){
+        GestionCostos gc = new GestionCostos(conexion, usuarioId);
+        gc.setVisible(true);
+    }
+}
 }
