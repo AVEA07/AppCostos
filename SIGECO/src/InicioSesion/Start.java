@@ -4,6 +4,7 @@
  */
 package InicioSesion;
 import Interfaz.*;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -11,10 +12,9 @@ import Interfaz.*;
  */
 public class Start {
     public static void main(String[] args) {
-        //Principal pr = new Principal();
-        //pr.setVisible(true);
-        
-        InicioSesion is = new InicioSesion();
-        is.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            InicioSesion is = new InicioSesion();
+            is.setVisible(true);
+        });
     }
 }

@@ -83,19 +83,19 @@ public class GestionCostos extends JFrame implements ActionListener {
      //Carga los datos desde la base de datos en la tabla.
     public void cargarDatos() {
         modelo.setRowCount(0);
-        try {
-            String sql = """
-                SELECT c.id, p.id AS proyecto_id, p.nombre AS proyecto,
-                       c.cantidad_programadores, c.nombre_modulo, c.complejidad,
-                       c.horas_estimadas, c.costo_por_hora, c.costo_total,
-                       CONCAT(u.nombre, ' ', u.apellido) AS usuario
-                FROM costos c
-                LEFT JOIN proyectos p ON c.proyecto_id = p.id
-                LEFT JOIN usuarios u ON c.usuarios_id = u.id
-                """; //WHERE c.usuarios_id = ?
-            PreparedStatement ps = conexion.prepareStatement(sql);
+        
+        String sql = """
+            SELECT c.id, p.id AS proyecto_id, p.nombre AS proyecto,
+                   c.cantidad_programadores, c.nombre_modulo, c.complejidad,
+                   c.horas_estimadas, c.costo_por_hora, c.costo_total,
+                   CONCAT(u.nombre, ' ', u.apellido) AS usuario
+            FROM costos c
+            LEFT JOIN proyectos p ON c.proyecto_id = p.id
+            LEFT JOIN usuarios u ON c.usuarios_id = u.id
+            """; //WHERE c.usuarios_id = ?
+        try (PreparedStatement ps = conexion.prepareStatement(sql);
             //ps.setInt(1, usuarioId);
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery()){
 
             while (rs.next()) {
                 modelo.addRow(new Object[]{
