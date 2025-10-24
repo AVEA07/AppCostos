@@ -39,12 +39,12 @@ public class GestionCostos extends JFrame implements ActionListener {
         // Modelo de la tabla
         modelo = new DefaultTableModel(new String[]{
             "ID", "Proyecto_ID", "Proyecto", "Programadores", "Módulo",
-            "Complejidad", "Horas Estimadas", "Costo/Hora", "Total"
+            "Complejidad", "Horas Estimadas", "Costo/Hora", "Total", "Usuario"
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Solo se pueden editar columnas específicas
-                return column != 0 && column != 1 && column != 2 && column != 8;
+                return column != 0 && column != 1 && column != 2 && column != 8 && column != 9;
             }
         };
 
@@ -54,6 +54,8 @@ public class GestionCostos extends JFrame implements ActionListener {
         tabla.getColumnModel().getColumn(1).setMinWidth(0);
         tabla.getColumnModel().getColumn(1).setMaxWidth(0);
         tabla.getColumnModel().getColumn(1).setWidth(0);
+        // Usuario visible
+        tabla.getColumnModel().getColumn(9).setPreferredWidth(150);
 
         add(new JScrollPane(tabla), BorderLayout.CENTER);
 
@@ -85,13 +87,14 @@ public class GestionCostos extends JFrame implements ActionListener {
             String sql = """
                 SELECT c.id, p.id AS proyecto_id, p.nombre AS proyecto,
                        c.cantidad_programadores, c.nombre_modulo, c.complejidad,
-                       c.horas_estimadas, c.costo_por_hora, c.costo_total
+                       c.horas_estimadas, c.costo_por_hora, c.costo_total,
+                       CONCAT(u.nombre, ' ', u.apellido) AS usuario
                 FROM costos c
                 LEFT JOIN proyectos p ON c.proyecto_id = p.id
-                WHERE c.usuarios_id = ?
-            """;
+                LEFT JOIN usuarios u ON c.usuarios_id = u.id
+                """; //WHERE c.usuarios_id = ?
             PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setInt(1, usuarioId);
+            //ps.setInt(1, usuarioId);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -104,7 +107,8 @@ public class GestionCostos extends JFrame implements ActionListener {
                     rs.getString("complejidad"),
                     rs.getDouble("horas_estimadas"),
                     rs.getDouble("costo_por_hora"),
-                    rs.getDouble("costo_total")
+                    rs.getDouble("costo_total"),
+                    rs.getString("usuario")
                 });
             }
         } catch (SQLException ex) {
@@ -136,11 +140,11 @@ public class GestionCostos extends JFrame implements ActionListener {
         try {
             for (int i = 0; i < modelo.getRowCount(); i++) {
                 int id = (int) modelo.getValueAt(i, 0);
-                int cantidad = (int) modelo.getValueAt(i, 3);
+                int cantidad =  Integer.parseInt(modelo.getValueAt(i, 3).toString());
                 String modulo = (String) modelo.getValueAt(i, 4);
                 String complejidad = (String) modelo.getValueAt(i, 5);
-                double horas = (double) modelo.getValueAt(i, 6);
-                double costoHora = (double) modelo.getValueAt(i, 7);
+                double horas = Double.parseDouble(modelo.getValueAt(i, 6).toString());
+                double costoHora = Double.parseDouble(modelo.getValueAt(i, 7).toString());
 
                 String sql = "UPDATE costos SET nombre_modulo=?, complejidad=?, cantidad_programadores=?, horas_estimadas=?, costo_por_hora=? WHERE id=?";
                 PreparedStatement ps = conexion.prepareStatement(sql);
