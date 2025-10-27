@@ -44,7 +44,8 @@ public class GestionCostos extends JFrame implements ActionListener {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Solo se pueden editar columnas específicas
-                return column != 0 && column != 1 && column != 2 && column != 8 && column != 9;
+                return column != 0 && column != 1 && column != 2 && column != 3 && column != 4 && column != 5 
+                        && column != 6 && column != 7 && column != 8 && column != 9;
             }
         };
 
