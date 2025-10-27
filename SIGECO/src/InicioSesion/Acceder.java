@@ -8,7 +8,9 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.sql.*;
 import org.mindrot.jbcrypt.BCrypt;
+
 import Interfaz.Principal;
+import Recursos.Recursos;
 /**
  *
  * @author practicante
@@ -26,10 +28,7 @@ public class Acceder extends JFrame implements ActionListener{
         setLocationRelativeTo(null);
         setResizable(false);
         
-        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
-        Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-        setIconImage(iconoEscalado);
-        
+        Recursos.cargarIcono(this, 64, 64);
         conectarDB();
         inicio();
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);

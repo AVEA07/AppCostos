@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.sql.*;
 
+import Recursos.Recursos;
+
 /**
  * @author practicante
  */
@@ -24,6 +26,8 @@ public class GestionCostos extends JFrame implements ActionListener {
         this.conexion = conexion;
         this.usuarioId = usuarioId;
 
+        Recursos.cargarIcono(this, 64, 64);
+        
         setTitle("Gestión de Costos");
         setSize(900, 400);
         setLocationRelativeTo(null);
@@ -44,8 +48,7 @@ public class GestionCostos extends JFrame implements ActionListener {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Solo se pueden editar columnas específicas
-                return column != 0 && column != 1 && column != 2 && column != 3 && column != 4 && column != 5 
-                        && column != 6 && column != 7 && column != 8 && column != 9;
+                return false;
             }
         };
 

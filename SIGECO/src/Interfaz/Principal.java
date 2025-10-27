@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.sql.*;
 
 import InicioSesion.*;
+import Recursos.Recursos;
 /**
  *
  * @author practicante
@@ -38,9 +39,7 @@ public class Principal extends JFrame implements ActionListener{
         setLocationRelativeTo(null);
         setResizable(false);
         
-        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
-        Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-        setIconImage(iconoEscalado);
+        Recursos.cargarIcono(this, 64, 64);
         
         inicio();
         //setVisible(true);
@@ -78,7 +77,7 @@ public class Principal extends JFrame implements ActionListener{
         contenedor.add(titulo,c);
         
         c.gridy = 1;
-        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
+        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG - CQ - 2D.png"));
         Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH);
         ImageIcon icono = new ImageIcon(imagenEscalada);
         JLabel logo = new JLabel(icono);

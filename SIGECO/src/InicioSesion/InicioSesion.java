@@ -3,6 +3,8 @@ package InicioSesion;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import Recursos.Recursos;
 /**
  *
  * @author practicante
@@ -17,11 +19,9 @@ public class InicioSesion extends JFrame implements ActionListener{
         setLocationRelativeTo(null);
         setResizable(false);
         
-        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
-        Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-        setIconImage(iconoEscalado);
-        
+        Recursos.cargarIcono(this, 64, 64);
         inicio();
+        
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         //setVisible(true);
     }
@@ -40,7 +40,7 @@ public class InicioSesion extends JFrame implements ActionListener{
         contenedor.add(panelTitulo,c);
         
         c.gridy = 1;
-        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
+        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG - SQ - 2D.png"));
         Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         ImageIcon icono = new ImageIcon(imagenEscalada);
         JLabel logo = new JLabel(icono);

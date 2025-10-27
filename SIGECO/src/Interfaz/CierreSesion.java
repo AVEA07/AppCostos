@@ -6,7 +6,9 @@ package Interfaz;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
 import InicioSesion.InicioSesion;
+import Recursos.Recursos;
 
 /**
  *
@@ -24,10 +26,7 @@ public class CierreSesion extends JFrame implements ActionListener{
         setLocationRelativeTo(null);
         setResizable(false);
         
-        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
-        Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-        setIconImage(iconoEscalado);
-        
+        Recursos.cargarIcono(this, 64, 64);
         inicio();
     }
     

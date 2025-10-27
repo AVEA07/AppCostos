@@ -10,6 +10,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import org.mindrot.jbcrypt.BCrypt;
 
+import Recursos.Recursos;
+
 /**
  *
  * @author practicante
@@ -30,13 +32,11 @@ public class Registro extends JFrame implements ActionListener{
         setLocationRelativeTo(null);
         setResizable(false);
         
-        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/Imagenes/SIGECO - BCG.png"));
-        Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-        setIconImage(iconoEscalado);
-        
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        Recursos.cargarIcono(this, 64, 64);
         conectarDB();
         inicio();
+        
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
     
     private void conectarDB() {

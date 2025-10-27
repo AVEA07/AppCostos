@@ -11,9 +11,13 @@ import java.awt.*;
  * @author practicante
  */
 public class Recursos {
-    public static ImageIcon cargarIcono(String ruta, int ancho, int alto) {
-        ImageIcon iconoOriginal = new ImageIcon(Recursos.class.getResource(ruta));
-        Image imgEscalada = iconoOriginal.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
-        return new ImageIcon(imgEscalada);
+    public static void cargarIcono(JFrame frame, int ancho, int altura){
+        try{
+            ImageIcon iconoOriginal = new ImageIcon(Recursos.class.getResource("/Imagenes/SIGECO - BCG - SQ - 2D.png"));
+            Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(ancho, altura, Image.SCALE_SMOOTH);
+            frame.setIconImage(iconoEscalado); 
+        }catch(Exception e){
+            frame.setIconImage(null);
+        }
     }
 }
