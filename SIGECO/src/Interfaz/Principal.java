@@ -24,7 +24,7 @@ public class Principal extends JFrame implements ActionListener{
 
     private Container contenedor;
     private JTextField campoProg, campoHoras, campoTec;
-    private JMenuBar barra; private JMenu menu; private JMenuItem cerrarSesion,calcularCostos, gestionarCostos;
+    private JMenuBar barra; private JMenu menu; private JMenuItem cerrarSesion,calcularCostos, gestionarCostos,administrarUsuario;
     private JLabel titulo;
     private String nombreUsuario;
     private Connection conexion;
@@ -60,6 +60,10 @@ public class Principal extends JFrame implements ActionListener{
         calcularCostos.addActionListener(this);
         gestionarCostos = new JMenuItem("Gestionar Costos");
         gestionarCostos.addActionListener(this);
+        administrarUsuario = new JMenuItem("Administrar Usuario");
+        administrarUsuario.addActionListener(this);
+        menu.add(administrarUsuario);
+        menu.addSeparator();
         menu.add(cerrarSesion);
         menu.addSeparator();
         menu.add(calcularCostos);
@@ -87,6 +91,11 @@ public class Principal extends JFrame implements ActionListener{
 
     @Override
 public void actionPerformed(ActionEvent e) {
+    if(e.getSource() == administrarUsuario){
+        AdministrarUsuario au = new AdministrarUsuario();
+        au.setVisible(true);
+    }
+    
     if(e.getSource() == cerrarSesion){
         CierreSesion ci = new CierreSesion(this);
         ci.setVisible(true);
