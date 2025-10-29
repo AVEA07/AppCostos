@@ -14,19 +14,20 @@ import Recursos.Recursos;
  *
  * @author practicante
  */
-public class CierreSesion extends JFrame implements ActionListener{
+public class CierreSesion extends JDialog implements ActionListener{
     private Container contenedor;
     private JButton aceptar, cancelar;
     private JFrame ventanaPrincipal;
     
     public CierreSesion(JFrame ventanaPrincipal){
+        super(ventanaPrincipal,"Confirmación",true);
         this.ventanaPrincipal = ventanaPrincipal;
-        setTitle("");
+        //setTitle("");
         setSize(350,250);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(ventanaPrincipal);
         setResizable(false);
         
-        Recursos.cargarIcono(this, 64, 64);
+        //Recursos.cargarIcono(this, 64, 64);
         inicio();
     }
     

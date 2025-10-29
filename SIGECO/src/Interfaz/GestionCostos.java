@@ -9,28 +9,33 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.sql.*;
 
-import Recursos.Recursos;
+//import Recursos.Recursos;
 
 /**
  * @author practicante
  */
-public class GestionCostos extends JFrame implements ActionListener {
+public class GestionCostos extends JDialog implements ActionListener {
 
     private JTable tabla;
     private DefaultTableModel modelo;
     private JButton agregar, modificar, eliminar, refrescar;
+    
     private Connection conexion;
     private int usuarioId;
+    private JFrame principal;
+    
 
-    public GestionCostos(Connection conexion, int usuarioId) {
+    public GestionCostos(JFrame principal, Connection conexion, int usuarioId) {
+        super(principal,"Gestión de Costos",true);
+        this.principal = principal;
         this.conexion = conexion;
         this.usuarioId = usuarioId;
 
-        Recursos.cargarIcono(this, 64, 64);
+        //Recursos.cargarIcono(this, 64, 64);
         
-        setTitle("Gestión de Costos");
+        //setTitle("Gestión de Costos");
         setSize(900, 400);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(principal);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         initComponents();
@@ -127,8 +132,11 @@ public class GestionCostos extends JFrame implements ActionListener {
         }
 
         if (e.getSource() == agregar) {
-            CalculadoraCostos cc = new CalculadoraCostos(conexion, usuarioId, this);
-            cc.setVisible(true);
+            IngresoProyecto ip = new IngresoProyecto(principal, conexion, usuarioId, this);
+            //setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+            //ip.setAlwaysOnTop(true);
+            ip.setLocationRelativeTo(this);
+            ip.setVisible(true);
         }
 
         if (e.getSource() == modificar) {

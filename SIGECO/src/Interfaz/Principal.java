@@ -24,7 +24,7 @@ public class Principal extends JFrame implements ActionListener{
 
     private Container contenedor;
     private JTextField campoProg, campoHoras, campoTec;
-    private JMenuBar barra; private JMenu menu; private JMenuItem cerrarSesion,calcularCostos, gestionarCostos,administrarUsuario;
+    private JMenuBar barra; private JMenu menu; private JMenuItem cerrarSesion,ingresoProyecto, gestionarCostos,administrarUsuario;
     private JLabel titulo;
     private String nombreUsuario;
     private Connection conexion;
@@ -56,8 +56,8 @@ public class Principal extends JFrame implements ActionListener{
         menu = new JMenu("Opciones");
         cerrarSesion = new JMenuItem("Cerrar Sesión");
         cerrarSesion.addActionListener(this);
-        calcularCostos = new JMenuItem("Calcular Costos");
-        calcularCostos.addActionListener(this);
+        ingresoProyecto = new JMenuItem("IngresarProyecto");
+        ingresoProyecto.addActionListener(this);
         gestionarCostos = new JMenuItem("Gestionar Costos");
         gestionarCostos.addActionListener(this);
         administrarUsuario = new JMenuItem("Administrar Usuario");
@@ -66,7 +66,7 @@ public class Principal extends JFrame implements ActionListener{
         menu.addSeparator();
         menu.add(cerrarSesion);
         menu.addSeparator();
-        menu.add(calcularCostos);
+        menu.add(ingresoProyecto);
         menu.add(gestionarCostos);
         barra.add(Box.createHorizontalGlue());
         barra.add(menu);
@@ -92,7 +92,7 @@ public class Principal extends JFrame implements ActionListener{
     @Override
 public void actionPerformed(ActionEvent e) {
     if(e.getSource() == administrarUsuario){
-        AdministrarUsuario au = new AdministrarUsuario();
+        AdministrarUsuario au = new AdministrarUsuario(this, conexion, usuarioId);
         au.setVisible(true);
     }
     
@@ -101,14 +101,18 @@ public void actionPerformed(ActionEvent e) {
         ci.setVisible(true);
     }
     
-    if(e.getSource() == calcularCostos){
+    if(e.getSource() == ingresoProyecto){
         // Aquí pasamos null como padre porque no hay ventana GestionCostos abierta
-        CalculadoraCostos cc = new CalculadoraCostos(conexion, usuarioId, null);
-        cc.setVisible(true);
+        IngresoProyecto ip = new IngresoProyecto(this, conexion, usuarioId, null);
+        //ip.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        //ip.setAlwaysOnTop(true);
+        ip.setVisible(true);
     }
     
     if(e.getSource() == gestionarCostos){
-        GestionCostos gc = new GestionCostos(conexion, usuarioId);
+        GestionCostos gc = new GestionCostos(this, conexion, usuarioId);
+        //gc.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        //gc.setAlwaysOnTop(true);
         gc.setVisible(true);
     }
 }

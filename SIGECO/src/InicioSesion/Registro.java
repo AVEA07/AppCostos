@@ -10,33 +10,33 @@ import java.sql.*;
 import java.util.ArrayList;
 import org.mindrot.jbcrypt.BCrypt;
 
-import Recursos.Recursos;
-
 /**
  *
  * @author practicante
  */
-public class Registro extends JFrame implements ActionListener{
+public class Registro extends JDialog implements ActionListener{
     private Container contenedor;
     private JTextField campoNombre, campoApellido, campoUsuario, campoCorreo;
     private JPasswordField campoContraseña;
     private JComboBox<String> comboRango;
     private JButton registrar, cancelar;
     
+    private JFrame inicioSesion;
+    
     private Connection conexion;
     private ArrayList<Integer> rangoIds = new ArrayList<>();
     
-    public Registro(){
-        setTitle("Registro");
+    public Registro(JFrame inicioSesion){
+        super(inicioSesion,"Registro",true);
+        this.inicioSesion = inicioSesion;
+        //setTitle("Registro");
         setSize(600,400);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(inicioSesion);
         setResizable(false);
         
-        Recursos.cargarIcono(this, 64, 64);
+        //Recursos.cargarIcono(inicioSesion, 64, 64);
         conectarDB();
         inicio();
-        
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
     
     private void conectarDB() {
@@ -96,7 +96,7 @@ public class Registro extends JFrame implements ActionListener{
         contenedor.add(campoCorreo,c);
         
         c.gridy = 5; c.gridx = 0;
-        contenedor.add(new JLabel("Rangos"),c);
+        contenedor.add(new JLabel("Rango"),c);
         c.gridx = 1;
         comboRango = new JComboBox<>();
         cargarRangos();
@@ -124,15 +124,13 @@ public class Registro extends JFrame implements ActionListener{
                 comboRango.addItem(rs.getString("nombre_rango"));
             }
         }catch(SQLException ex){
-            JOptionPane.showMessageDialog(null,"Error al cargar Rangos: " + ex.getMessage());
+            JOptionPane.showMessageDialog(inicioSesion,"Error al cargar Rangos: " + ex.getMessage());
         }
     }
     
     @Override
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == cancelar){
-            InicioSesion is = new InicioSesion();
-            is.setVisible(true);
             this.dispose();
         }
         
@@ -147,7 +145,7 @@ public class Registro extends JFrame implements ActionListener{
             int rangoId = rangoIds.get(comboRango.getSelectedIndex());
             
             if(nombre.isEmpty() || usuario.isEmpty() || correo.isEmpty()){
-                JOptionPane.showMessageDialog(null, "Llenar todos los campos");
+                JOptionPane.showMessageDialog(inicioSesion, "Llenar todos los campos");
                 return;
             }
             
@@ -164,12 +162,11 @@ public class Registro extends JFrame implements ActionListener{
                 ps.setString(6, correo.isEmpty() ? null : correo);
                 ps.executeUpdate();
                 
-                JOptionPane.showMessageDialog(null, "Usuario Registrado");
-                InicioSesion is = new InicioSesion();
-                is.setVisible(true);
+                JOptionPane.showMessageDialog(inicioSesion, "Usuario Registrado");
+                
                 this.dispose();
             }catch(SQLException ex){
-                JOptionPane.showMessageDialog(null, "Error al registrar usuario: "+ex.getMessage());
+                JOptionPane.showMessageDialog(inicioSesion, "Error al registrar usuario: "+ex.getMessage());
             }
         }
     }

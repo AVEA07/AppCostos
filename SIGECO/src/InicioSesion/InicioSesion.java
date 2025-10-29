@@ -61,14 +61,14 @@ public class InicioSesion extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == acceder){
-            Acceder ac = new Acceder();
+            Acceder ac = new Acceder(this);
             ac.setVisible(true);
-            this.dispose();
+            //this.dispose();
         }
         if(e.getSource() == registrar){
-            Registro re = new Registro();
+            Registro re = new Registro(this);
             re.setVisible(true);
-            this.dispose();
+            //this.dispose();
         }
     }
 }
