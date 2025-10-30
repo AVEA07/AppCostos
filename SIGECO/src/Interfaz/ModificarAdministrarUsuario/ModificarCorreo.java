@@ -14,9 +14,9 @@ import InicioSesion.Acceder;
  *
  * @author practicante
  */
-public class ModificarUsuario extends JDialog implements ActionListener{
+public class ModificarCorreo extends JDialog implements ActionListener{
     private Container contenedor;
-    private JTextField campoUsuario;
+    private JTextField campoCorreo;
     private JButton cancelar,cambiar;
     private int usuarioId;
     private Connection conexion;
@@ -24,7 +24,7 @@ public class ModificarUsuario extends JDialog implements ActionListener{
     private JDialog administrarUsuario;
     private JFrame principal;
     
-    public ModificarUsuario(JDialog administrarUsuario,JFrame principal,Connection conexion, int usuarioId){
+    public ModificarCorreo(JDialog administrarUsuario,JFrame principal,Connection conexion, int usuarioId){
         super(administrarUsuario,"Cambiar Nombre de Usuario", true);
         this.administrarUsuario = administrarUsuario;
         this.principal = principal;
@@ -46,13 +46,13 @@ public class ModificarUsuario extends JDialog implements ActionListener{
         c.anchor = GridBagConstraints.CENTER;
         
         c.gridy = 0; c.gridx = 0; //c.gridwidth = 1;
-        JLabel titulo = new JLabel("Ingresar nuevo usuario");
+        JLabel titulo = new JLabel("Ingresar nuevo correo");
         titulo.setFont(new Font("Arial", Font.BOLD, 14));
         contenedor.add(titulo,c);
         c.gridy = 1;
-        campoUsuario = new JTextField(15);
-        campoUsuario.setFont(new Font("Arial", Font.PLAIN, 14));
-        contenedor.add(campoUsuario,c);
+        campoCorreo = new JTextField(15);
+        campoCorreo.setFont(new Font("Arial", Font.PLAIN, 14));
+        contenedor.add(campoCorreo,c);
         
         
         c.gridy = 2;
@@ -75,15 +75,15 @@ public class ModificarUsuario extends JDialog implements ActionListener{
             }
             
             if(e.getSource() == cambiar){
-                String nuevoUsuario = campoUsuario.getText().trim();
-                if(!nuevoUsuario.isEmpty()){
+                String nuevoCorreo = campoCorreo.getText().trim();
+                if(!nuevoCorreo.isEmpty()){
                     try{
-                       PreparedStatement ps = conexion.prepareStatement("UPDATE usuarios SET usuario = ? WHERE id = ?");
-                       ps.setString(1, nuevoUsuario);
+                       PreparedStatement ps = conexion.prepareStatement("UPDATE usuarios SET correo = ? WHERE id = ?");
+                       ps.setString(1, nuevoCorreo);
                        ps.setInt(2, usuarioId);
                        ps.executeUpdate();
                        ps.close();
-                       JOptionPane.showMessageDialog(this, "Usuario Actualizado");
+                       JOptionPane.showMessageDialog(this, "Correo Actualizado");
                        dispose();
                        principal.dispose();
                        //principal.setVisible(true);

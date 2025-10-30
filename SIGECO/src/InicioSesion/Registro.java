@@ -46,7 +46,7 @@ public class Registro extends JDialog implements ActionListener{
             String pass = "Angel2007";
             conexion = DriverManager.getConnection(url, user, pass);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error al conectar con la base de datos: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al conectar con la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
     }
@@ -110,21 +110,21 @@ public class Registro extends JDialog implements ActionListener{
         registrar.addActionListener(this);
         cancelar = new JButton("Cancelar");
         cancelar.addActionListener(this);
-        panelBotones.add(registrar);
         panelBotones.add(cancelar);
+        panelBotones.add(registrar);
         contenedor.add(panelBotones,c);
     }
     
     public void cargarRangos(){
         try{
             Statement stmt = conexion.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT id, nombre_rango FROM rangos ORDER BY nivel");
+            ResultSet rs = stmt.executeQuery("SELECT id, nombre_rango FROM rango ORDER BY nivel");
             while (rs.next()){
                 rangoIds.add(rs.getInt("id"));
                 comboRango.addItem(rs.getString("nombre_rango"));
             }
         }catch(SQLException ex){
-            JOptionPane.showMessageDialog(inicioSesion,"Error al cargar Rangos: " + ex.getMessage());
+            JOptionPane.showMessageDialog(inicioSesion,"Error al cargar Rangos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -163,10 +163,11 @@ public class Registro extends JDialog implements ActionListener{
                 ps.executeUpdate();
                 
                 JOptionPane.showMessageDialog(inicioSesion, "Usuario Registrado");
-                
+                //InicioSesion is = new InicioSesion();
                 this.dispose();
+                
             }catch(SQLException ex){
-                JOptionPane.showMessageDialog(inicioSesion, "Error al registrar usuario: "+ex.getMessage());
+                JOptionPane.showMessageDialog(inicioSesion, "Error al registrar usuario: "+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

@@ -110,7 +110,7 @@ public void actionPerformed(ActionEvent e) {
     }
     
     if(e.getSource() == gestionarCostos){
-        GestionCostos gc = new GestionCostos(this, conexion, usuarioId);
+        GestionProgramas gc = new GestionProgramas(this, conexion, usuarioId);
         //gc.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         //gc.setAlwaysOnTop(true);
         gc.setVisible(true);

@@ -16,32 +16,26 @@ import java.sql.*;
  */
 
 public class IngresoProyecto extends JDialog implements ActionListener {
-    private JComboBox<String> tipoBox;
-    private JComboBox<String> techBox;
-    private JTextField campoProyecto, campoModulo, campoCantidad;
-    //private JComboBox<String> complejidadBox;
-    private JButton //calcular, 
-            guardar,cancelar;
-    private JLabel resultadoLabel;
+    private JTextField campoProyecto;
+    private JTextArea campoDescripcion;
+    private JButton guardar, cancelar;
     private Container contenedor;
-    private double total = 0.0;
 
     private Connection conexion;
     private int usuarioId;
-    private GestionCostos gc;
+    private GestionProgramas gp;
 
-    public IngresoProyecto(JFrame padre, Connection conexion, int usuarioId, GestionCostos gc) {
-        super(padre,"Ingreso de Proyecto",true);
+
+    public IngresoProyecto(JFrame padre, Connection conexion, int usuarioId, GestionProgramas gp) {
+        super(padre, "Ingreso de Proyecto", true);
         this.conexion = conexion;
         this.usuarioId = usuarioId;
-        this.gc = gc;
+        this.gp = gp;
 
-        //setTitle("Calculadora de Costos");
-        setSize(500, 350);
+        setSize(500, 400);
         setLocationRelativeTo(padre);
         setResizable(false);
 
-        //Recursos.cargarIcono(this, 64, 64);
         inicio();
     }
 
@@ -58,117 +52,69 @@ public class IngresoProyecto extends JDialog implements ActionListener {
         c.gridx = 1;
         contenedor.add(campoProyecto, c);
         
-        /*
-        c.gridx = 0; c.gridy = 1;
-        contenedor.add(new JLabel("Complejidad:"), c);
-        complejidadBox = new JComboBox<>(new String[]{"baja", "media", "alta"});
-        c.gridx = 1;
-        contenedor.add(complejidadBox, c);
-        */
+        c.gridx = 0; c.gridy = 1; c.gridwidth = 2;
+        campoDescripcion = new JTextArea(10, 15);
+        campoDescripcion.setLineWrap(true);
+        campoDescripcion.setWrapStyleWord(true);
+        JScrollPane scroll = new JScrollPane(campoDescripcion);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        contenedor.add(scroll,c);
 
-        c.gridx = 0; c.gridy = 2;
-        contenedor.add(new JLabel("Programadores encargados:"), c);
-        campoCantidad = new JTextField(15);
-        c.gridx = 1;
-        contenedor.add(campoCantidad, c);
-
-        /*
-        c.gridx = 0; c.gridy = 3;
-        contenedor.add(new JLabel("Horas estimadas por programador:"), c);
-        campoHoras = new JTextField(20);
-        c.gridx = 1;
-        contenedor.add(campoHoras, c);
-
-        c.gridx = 0; c.gridy = 4;
-        contenedor.add(new JLabel("Costo por hora (USD):"), c);
-        campoTarifa = new JTextField(20);
-        c.gridx = 1;
-        contenedor.add(campoTarifa, c);
-        */
-
-        
         JPanel panelBotones = new JPanel();
-        //calcular = new JButton("Calcular");
-        guardar = new JButton("Guardar");
         cancelar = new JButton("Cancelar");
-        //calcular.addActionListener(this);
-        guardar.addActionListener(this);
+        guardar = new JButton("Guardar");
         cancelar.addActionListener(this);
-        //panelBotones.add(calcular);
-        panelBotones.add(guardar);
+        guardar.addActionListener(this);
         panelBotones.add(cancelar);
-        c.gridx = 0; c.gridy = 6; c.gridwidth = 2;
+        panelBotones.add(guardar);
+        c.gridx = 0; c.gridy = 2; c.gridwidth = 2;
         contenedor.add(panelBotones, c);
-
-        //resultadoLabel = new JLabel("Total: 0.00 USD");
-        //c.gridy = 7;
-        //contenedor.add(resultadoLabel, c);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        /*
-        if (e.getSource() == calcular) {
-            try {
-                //int cantidad = Integer.parseInt(campoCantidad.getText().trim());
-                //double horas = Double.parseDouble(campoHoras.getText().trim());
-                //double tarifa = Double.parseDouble(campoTarifa.getText().trim());
-
-                //total = cantidad * horas * tarifa;
-                //resultadoLabel.setText("Total: " + String.format("%.2f USD", total));
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Introduce números válidos", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        */
-        
         if(e.getSource() == cancelar){
             this.dispose();
         }
 
         if (e.getSource() == guardar) {
             try {
-                String proyecto = campoProyecto.getText().trim();
-                //String complejidad = (String) complejidadBox.getSelectedItem();
-                //double horas = Double.parseDouble(campoHoras.getText().trim());
-                //double costoHora = Double.parseDouble(campoTarifa.getText().trim());
-                int cantidad = Integer.parseInt(campoCantidad.getText().trim());
-
-                // Verificar si el proyecto ya existe o insertarlo
+                String nombreProyecto = campoProyecto.getText().trim();
+                String descripcionProyecto = campoDescripcion.getText().trim();
+                
+                if(nombreProyecto.isEmpty() || descripcionProyecto.isEmpty()){
+                    JOptionPane.showMessageDialog(this, "Debe llenar todos los campos");
+                    return;
+                }
+                
                 int proyectoId;
-                String sqlProyecto = "SELECT id FROM proyectos WHERE nombre = ? AND usuarios_id = ?";
+                String sqlProyecto = "SELECT id FROM proyecto WHERE nombre_proyecto = ?";
                 PreparedStatement psProyecto = conexion.prepareStatement(sqlProyecto);
-                psProyecto.setString(1, proyecto);
-                psProyecto.setInt(2, usuarioId);
+                psProyecto.setString(1, nombreProyecto);
                 ResultSet rs = psProyecto.executeQuery();
 
                 if (rs.next()) {
                     proyectoId = rs.getInt("id");
                 } else {
-                    String insertProyecto = "INSERT INTO proyectos (nombre, usuarios_id) VALUES (?, ?)";
+                    String insertProyecto = "INSERT INTO proyecto (nombre_proyecto, descripcion) VALUES (?,?)";
                     PreparedStatement psInsert = conexion.prepareStatement(insertProyecto, Statement.RETURN_GENERATED_KEYS);
-                    psInsert.setString(1, proyecto);
-                    psInsert.setInt(2, usuarioId);
+                    psInsert.setString(1, nombreProyecto);
+                    psInsert.setString(2, descripcionProyecto);
                     psInsert.executeUpdate();
                     ResultSet keys = psInsert.getGeneratedKeys();
                     keys.next();
                     proyectoId = keys.getInt(1);
                 }
-
-                // Insertar el nuevo costo
-                String sqlCosto = "INSERT INTO costos (proyecto_id, usuarios_id, nombre_modulo, complejidad, cantidad_programadores, horas_estimadas, costo_por_hora) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                String sqlCosto = "INSERT INTO costos (proyecto_id) VALUES (?)";
                 PreparedStatement psCosto = conexion.prepareStatement(sqlCosto);
                 psCosto.setInt(1, proyectoId);
-                psCosto.setInt(2, usuarioId);
-                //psCosto.setString(4, complejidad);
-                psCosto.setInt(5, cantidad);
-                //psCosto.setDouble(6, horas);
-                //psCosto.setDouble(7, costoHora);
+                //psCosto.setDouble(2, costoProyecto);
                 psCosto.executeUpdate();
 
                 JOptionPane.showMessageDialog(this, "Registro guardado exitosamente");
-                if (gc != null) {
-                    gc.cargarDatos();
+                if (gp != null) {
+                    gp.cargarDatos();
                 }
                 dispose();
 

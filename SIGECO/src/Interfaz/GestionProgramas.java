@@ -14,7 +14,7 @@ import java.sql.*;
 /**
  * @author practicante
  */
-public class GestionCostos extends JDialog implements ActionListener {
+public class GestionProgramas extends JDialog implements ActionListener {
 
     private JTable tabla;
     private DefaultTableModel modelo;
@@ -25,8 +25,8 @@ public class GestionCostos extends JDialog implements ActionListener {
     private JFrame principal;
     
 
-    public GestionCostos(JFrame principal, Connection conexion, int usuarioId) {
-        super(principal,"Gestión de Costos",true);
+    public GestionProgramas(JFrame principal, Connection conexion, int usuarioId) {
+        super(principal,"Gestión de Programas",true);
         this.principal = principal;
         this.conexion = conexion;
         this.usuarioId = usuarioId;
@@ -47,8 +47,7 @@ public class GestionCostos extends JDialog implements ActionListener {
 
         // Modelo de la tabla
         modelo = new DefaultTableModel(new String[]{
-            "ID", "Proyecto_ID", "Proyecto", "Programadores", "Módulo",
-            "Complejidad", "Horas Estimadas", "Costo/Hora", "Total", "Usuario"
+            "ID","Proyecto_ID", "Descripcion", "Complejidad","Costo Total", "Usuario"
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -94,14 +93,14 @@ public class GestionCostos extends JDialog implements ActionListener {
         modelo.setRowCount(0);
         
         String sql = """
-            SELECT c.id, p.id AS proyecto_id, p.nombre AS proyecto,
-                   c.cantidad_programadores, c.nombre_modulo, c.complejidad,
-                   c.horas_estimadas, c.costo_por_hora, c.costo_total,
-                   CONCAT(u.nombre, ' ', u.apellido) AS usuario
-            FROM costos c
-            LEFT JOIN proyectos p ON c.proyecto_id = p.id
-            LEFT JOIN usuarios u ON c.usuarios_id = u.id
-            """; //WHERE c.usuarios_id = ?
+                     SELECT  c.id, p.id AS proyecto_id, p.descripcion co.nivel,
+                     c.costo_proyecto,
+                     CONCAT(u.nombre, ' ', u.apellido) AS usuario
+                     FROM costos c
+                     LEFT JOIN proyecto p ON c.proyecto_id = p.id
+                     LEFT JOIN usuarios u ON c.usuarios_id = u.id
+                     LEFT JOIN complejidad co ON p.complejidad_id = co.id
+            """;
         try (PreparedStatement ps = conexion.prepareStatement(sql);
             //ps.setInt(1, usuarioId);
             ResultSet rs = ps.executeQuery()){
@@ -111,7 +110,7 @@ public class GestionCostos extends JDialog implements ActionListener {
                     rs.getInt("id"),
                     rs.getInt("proyecto_id"),
                     rs.getString("proyecto"),
-                    rs.getInt("cantidad_programadores"),
+                    //rs.getInt("cantidad_programadores"),
                     rs.getString("nombre_modulo"),
                     rs.getString("complejidad"),
                     rs.getDouble("horas_estimadas"),

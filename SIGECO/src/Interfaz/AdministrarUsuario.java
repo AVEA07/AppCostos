@@ -8,7 +8,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.sql.*;
 
-import Interfaz.ModificarAdministrarUsuario.ModificarUsuario;
+import Interfaz.ModificarAdministrarUsuario.*;
 
 /**
  *
@@ -16,9 +16,9 @@ import Interfaz.ModificarAdministrarUsuario.ModificarUsuario;
  */
 public class AdministrarUsuario  extends JDialog implements ActionListener{
     private Container contenedor;
-    private JButton regresar, cambiarUsuario;
+    private JButton regresar, cambiarUsuario, cambiarCorreo;
     
-    private JLabel nombre, apellido, usuario, contraseña, rango, correo;
+    private JLabel nombre, apellido, usuario, contraseña, rango, nivel, correo;
     private Connection conexion;
     private int usuarioId;
     
@@ -30,7 +30,7 @@ public class AdministrarUsuario  extends JDialog implements ActionListener{
         this.conexion = conexion;
         this.usuarioId = usuarioId;
         //setTitle("Inicio de Sesión");
-        setSize(700, 450);
+        setSize(700, 430);
         setLocationRelativeTo(principal);
         setResizable(false);
         
@@ -43,7 +43,7 @@ public class AdministrarUsuario  extends JDialog implements ActionListener{
         try{
             String sql = """
                          SELECT u.nombre, u.apellido, u.usuario, u.correo, r.nombre_rango, r.nivel 
-                         FROM usuarios u INNER JOIN rangos r ON u.rango_id = r.id 
+                         FROM usuarios u INNER JOIN rango r ON u.rango_id = r.id 
                          WHERE u.id = ?
                          """;
             PreparedStatement ps = conexion.prepareStatement(sql);
@@ -54,7 +54,8 @@ public class AdministrarUsuario  extends JDialog implements ActionListener{
                 nombre = new JLabel("Nombre: " + rs.getString("nombre"));
                 apellido = new JLabel("Apellido: " + rs.getString("apellido"));
                 usuario = new JLabel("Nombre Usuario: " + rs.getString("usuario"));
-                rango = new JLabel("Rango del Usuario: " + rs.getString("nombre_rango")+", Nivel "+rs.getInt("nivel"));
+                rango = new JLabel("Rango del Usuario: " + rs.getString("nombre_rango"));
+                nivel = new JLabel("Nivel de Usuario: " + rs.getInt("nivel"));
                 correo = new JLabel("Correo Electronico: " + rs.getString("correo"));
             } else {
                 JOptionPane.showMessageDialog(principal, "No se encontraron datos del usuario","Aviso",JOptionPane.WARNING_MESSAGE);
@@ -75,17 +76,18 @@ public class AdministrarUsuario  extends JDialog implements ActionListener{
         contenedor = getContentPane();
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5,5,5,5);
+        c.insets = new Insets(5,5,30,5);
         
         c.gridy = 0; c.gridx = 0; c.gridwidth = 2;
         JLabel titulo = new JLabel("Datos del usuario",SwingConstants.CENTER);
         titulo.setFont(new Font("Arial", Font.BOLD, 20));
         contenedor.add(titulo,c);
         
+        c.insets = new Insets(5,5,5,5);
         c.gridwidth = 1;
         c.gridy = 1; c.anchor = GridBagConstraints.WEST;
         contenedor.add(usuario,c);
-        c.gridx = 1;;
+        c.gridx = 1;
         cambiarUsuario = new JButton("Modificar");
         cambiarUsuario.addActionListener(this);
         contenedor.add(cambiarUsuario,c);
@@ -96,9 +98,15 @@ public class AdministrarUsuario  extends JDialog implements ActionListener{
         c.gridy = 4;
         contenedor.add(rango,c);
         c.gridy = 5;
+        contenedor.add(nivel,c);
+        c.gridy = 6;
         contenedor.add(correo,c);
+        c.gridx = 1;
+        cambiarCorreo = new JButton("Modificar");
+        cambiarCorreo.addActionListener(this);
+        contenedor.add(cambiarCorreo,c);
         
-        c.gridy = 6; c.anchor = GridBagConstraints.CENTER;
+        c.gridy = 7; c.gridx = 0; c.gridwidth = 2; c.anchor = GridBagConstraints.CENTER;
         JPanel panelBotones = new JPanel();
         regresar = new JButton("Regresar");
         regresar.addActionListener(this);
@@ -113,7 +121,13 @@ public class AdministrarUsuario  extends JDialog implements ActionListener{
         }
         
         if(e.getSource() == cambiarUsuario){
-            
+            ModificarUsuario mu = new ModificarUsuario(this,principal,conexion,usuarioId);
+            mu.setVisible(true);
+        }
+        
+        if(e.getSource() == cambiarCorreo){
+            ModificarCorreo mc = new ModificarCorreo(this,principal,conexion,usuarioId);
+            mc.setVisible(true);
         }
     }
 }

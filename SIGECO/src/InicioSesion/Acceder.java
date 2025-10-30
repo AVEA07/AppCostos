@@ -43,8 +43,9 @@ public class Acceder extends JDialog implements ActionListener{
             String pass = "Angel2007";
             conexion = DriverManager.getConnection(url,user,pass);
         }catch(SQLException ex){
-            JOptionPane.showMessageDialog(inicioSesion, "Error al ocnectar con la base de datos" + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(inicioSesion, "Error al cocnectar con la base de datos" + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
             //System.exit(0);
+            this.dispose();
         }
     }
     
@@ -59,7 +60,6 @@ public class Acceder extends JDialog implements ActionListener{
         JLabel titulo = new JLabel("Inicie sesión con su usuario",SwingConstants.CENTER);
         titulo.setFont(new Font("Arial",Font.BOLD,16));
         contenedor.add(titulo,c);
-        
         c.gridwidth = 1;c.gridy = 1;
         contenedor.add(new JLabel ("Usuario"),c);
         c.gridx = 1;
@@ -72,20 +72,21 @@ public class Acceder extends JDialog implements ActionListener{
         campoContraseña = new JPasswordField(15);
         contenedor.add(campoContraseña,c);
         
-        c.gridy = 3;
+        c.gridy = 3; c.gridx = 0; c.gridwidth = 2;
         JPanel panelBotones = new JPanel();
         ingresar = new JButton("Ingresar");
         ingresar.addActionListener(this);
         cancelar = new JButton("Cancelar");
         cancelar.addActionListener(this);
-        panelBotones.add(ingresar);
         panelBotones.add(cancelar);
+        panelBotones.add(ingresar);
         contenedor.add(panelBotones,c);
     }
     
     @Override
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == cancelar){
+            //InicioSesion is = new InicioSesion();
             this.dispose();
         }
         
@@ -117,17 +118,23 @@ public class Acceder extends JDialog implements ActionListener{
                     int idUsuarios = rs.getInt("id");
                     Principal pr = new Principal(nombreUsuario ,conexion, idUsuarios);
                     pr.setVisible(true);
-                    inicioSesion.dispose();
-                    this.dispose();
+                    
+                    if(inicioSesion != null && inicioSesion.isDisplayable()){
+                        inicioSesion.dispose();
+                        this.dispose();
+                    }else{
+                        this.dispose();   
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(inicioSesion, "Contraseña incorrecta","Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(inicioSesion, "Contraseña incorrecta");
                 }
             }else{
-                JOptionPane.showMessageDialog(inicioSesion, "Usuario no encontrado","Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(inicioSesion, "Usuario no encontrado");
             }
             
             rs.close();
             ps.close();
+            this.dispose();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(inicioSesion, "Error al validar usuario: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
         }
