@@ -139,7 +139,26 @@ public class IngresoProyecto extends JDialog implements ActionListener {
 
                     if (resp == JOptionPane.YES_OPTION) {
                         if (gp != null) gp.cargarDatos();
+                        String checkSql = "SELECT COUNT(*) AS total FROM asignacion_proyecto WHERE proyecto_id = ? AND usuarios_id = ?";
+                        try (PreparedStatement ps = conexion.prepareStatement(checkSql)) {
+                            ps.setInt(1, proyectoId);
+                            ps.setInt(2, usuarioId);
+                            try (ResultSet rs = ps.executeQuery()) {
+                                if (rs.next()) {
+                                    int total = rs.getInt("total");
+                                    if (total == 0) {
+                                        JOptionPane.showMessageDialog(this, "No eres el usuario encargado de este proyecto. Solo el encargado puede modificarlo.", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(this, "Error al verificar permisos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
                         dispose();
+                        EditarProyecto ep = new EditarProyecto(this,conexion,proyectoId,usuarioId);
+                        ep.setVisible(true);
                         return;
                     } else {
                         // No crea nada, simplemente vuelve a la UI

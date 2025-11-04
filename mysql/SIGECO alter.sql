@@ -1,0 +1,7 @@
+USE SIGECO;
+
+ALTER TABLE proyecto
+	MODIFY fecha_inicializacion DATE DEFAULT (CURRENT_DATE);
+
+ALTER TABLE complejidad
+	MODIFY nivel VARCHAR(100) NOT NULL;

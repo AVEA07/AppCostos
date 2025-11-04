@@ -1,0 +1,25 @@
+USE SIGECO;
+
+SELECT * FROM almacenamiento;
+SELECT * FROM asignacion_capacitacion;
+SELECT * FROM asignacion_documentacion;
+SELECT * FROM asignacion_proyecto;
+SELECT * FROM capacitacion;
+SELECT * FROM complejidad;
+SELECT * FROM costos;
+SELECT * FROM documentacion;
+SELECT * FROM modalidad;
+SELECT * FROM modulo;
+SELECT * FROM nombre_host;
+SELECT * FROM programador;
+SELECT * FROM programador_tecnologia;
+SELECT * FROM proyecto;
+SELECT * FROM proyecto_log;
+SELECT * FROM rango;
+SELECT * FROM seguimiento;
+SELECT * FROM skill;
+SELECT * FROM tecnologia;
+SELECT * FROM tipo_cobro;
+SELECT * FROM tipo_documentacion;
+SELECT * FROM tipo_host;
+SELECT * FROM usuarios;

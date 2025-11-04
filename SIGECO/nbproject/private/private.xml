@@ -2,18 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/Start/Start.java</file>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/InicioSesion/Registro.java</file>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/InicioSesion/Acceder.java</file>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/InicioSesion/InicioSesion.java</file>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/Interfaz/AdministrarUsuario.java</file>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/Interfaz/IngresoProyecto.java</file>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/Recursos/Recursos.java</file>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/Recursos/ConexionDB.java</file>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/Interfaz/Principal.java</file>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/Interfaz/GestionProgramas.java</file>
-            <file>file:/home/aeva2007/ANGEL/Java/AppCostos/SIGECO/src/Interfaz/EditarProyecto.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
