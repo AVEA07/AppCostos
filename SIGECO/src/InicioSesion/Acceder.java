@@ -119,22 +119,24 @@ public class Acceder extends JDialog implements ActionListener{
                     Principal pr = new Principal(nombreUsuario ,conexion, idUsuarios);
                     pr.setVisible(true);
                     
-                    if(inicioSesion != null && inicioSesion.isDisplayable()){
-                        inicioSesion.dispose();
-                        this.dispose();
-                    }else{
-                        this.dispose();   
-                    }
+                    
                 } else {
                     JOptionPane.showMessageDialog(inicioSesion, "Contraseña incorrecta");
+                    return;
                 }
             }else{
                 JOptionPane.showMessageDialog(inicioSesion, "Usuario no encontrado");
+                return;
             }
             
             rs.close();
             ps.close();
-            this.dispose();
+            if(inicioSesion != null && inicioSesion.isDisplayable()){
+                inicioSesion.dispose();
+                this.dispose();
+            }else{
+                this.dispose();   
+            }
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(inicioSesion, "Error al validar usuario: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
         }

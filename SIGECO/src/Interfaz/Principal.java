@@ -58,7 +58,7 @@ public class Principal extends JFrame implements ActionListener{
         cerrarSesion.addActionListener(this);
         ingresoProyecto = new JMenuItem("IngresarProyecto");
         ingresoProyecto.addActionListener(this);
-        gestionarCostos = new JMenuItem("Gestionar Costos");
+        gestionarCostos = new JMenuItem("Gestionar Programas");
         gestionarCostos.addActionListener(this);
         administrarUsuario = new JMenuItem("Administrar Usuario");
         administrarUsuario.addActionListener(this);

@@ -41,9 +41,16 @@ public class Registro extends JDialog implements ActionListener{
     
     private void conectarDB() {
         try{
-            String url = "jdbc:mysql://localhost:3306/SIGECO";
+            //String url = "jdbc:mysql://localhost:3306/SIGECO";
+            String url = "jdbc:mysql://localhost:3306/SIGECO?serverTimezone=UTC";
+            //String url = "jdbc:mysql://172.27.96.1:3306/SIGECO?serverTimezone=UTC";
             String user = "practicante";
             String pass = "Angel2007";
+            //String pass = "citcostos2025";
+
+//            String url = "jdbc:mysql://sql8.freesqldatabase.com:3306/sql8805655?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+//            String user = "sql8805655";
+//            String pass = "MSa8weYIEv";
             conexion = DriverManager.getConnection(url, user, pass);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error al conectar con la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

@@ -4,6 +4,7 @@
  */
 package Start;
 import InicioSesion.InicioSesion;
+import Recursos.ConexionDB;
 import javax.swing.SwingUtilities;
 
 /**
@@ -13,8 +14,11 @@ import javax.swing.SwingUtilities;
 public class Start {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+            
             InicioSesion is = new InicioSesion();
             is.setVisible(true);
+            
+            
         });
     }
 }

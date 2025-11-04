@@ -5,6 +5,18 @@ docker run --name dbsigecomysql \
 -e MYSQL_PASSWORD=Angel2007 \
 -p 3306:3306 \
 -d mysql:8.0
+
+docker run --name dbsigecomysql \
+  -e MYSQL_ROOT_PASSWORD=citcosto2025 \
+  -e MYSQL_DATABASE=SIGECO \
+  -e MYSQL_USER=practicante \
+  -e MYSQL_PASSWORD=Angel2007 \
+  -p 3306:3306 \
+  -d mysql:8.0
+
+
+
+
 # Comando para crear un contenedor MySQL con Docker
 # Este comando crea un contenedor llamado dbsigecomysql con las credenciales y configur
 docker run --name dbsigecomysql
@@ -20,6 +32,10 @@ docker run --name dbsigecomysql -e MYSQL_ROOT_PASSWORD=citcostos2025 -e MYSQL_DA
 
 # Entrar al contenedor MySQL
 docker exec -it dbsigecomysql mysql -upracticante -pAngel2007 SIGECO
+
+# Ver logs del contenedor MySQL
+docker logs dbsigecomysql
+
 
 databases: SIGECO;
 user: practicante;
@@ -398,6 +414,19 @@ ALTER TABLE costos ADD FOREIGN KEY (usuarios_id) REFERENCES usuarios(id);
 
 
 
+# Comando para eliminar el contenedor MySQL si ya existe
+docker stop dbsigecomysql
+docker rm dbsigecomysql
+
+docker run --name dbsigecomysql \
+    -e MYSQL_ROOT_PASSWORD=citcostos2025 \
+    -e MYSQL_DATABASE=SIGECO \
+    -e MYSQL_USER=practicante \
+    -e MYSQL_PASSWORD=Angel2007 \
+    -p 3306:3306 \
+    -v ~/ANGEL/mysql_conf:/etc/mysql/conf.d \
+    -d mysql:8.0
+
 
 CREATE DATABASE IF NOT EXISTS SIGECO;
 USE SIGECO;
@@ -623,11 +652,15 @@ INSERT INTO rango (nombre_rango, nivel) VALUES
 ('General de Brigada',15),
 ('General de Division',16);
 
+4ng3l_2007_18
 
+docker run --name dbsigecomysql -e MYSQL_ROOT_PASSWORD=citcosto2025 -e MYSQL_DATABASE=SIGECO -e MYSQL_USER=practicante -e MYSQL_PASSWORD=Angel2007 -p 3306:3306 -d mysql:8.0
 
-
-
-
+sudo apt update -y
+sudo apt install docker.io -y
+sudo service docker start
+sudo usermod -aG docker $USER
+newgrp docker
 
 
 

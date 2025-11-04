@@ -9,202 +9,199 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.sql.*;
 
-//import Recursos.Recursos;
-
 /**
+ * Gestión de Programas - versión simplificada y segura.
+ * Se eliminan botones peligrosos (Eliminar, Refrescar) y
+ * se sustituye "Guardar Cambios" por "Modificar" que abre una ventana
+ * dedicada (EditarProyecto). Solo el usuario asignado puede modificar.
+ *
  * @author practicante
  */
 public class GestionProgramas extends JDialog implements ActionListener {
 
     private JTable tabla;
     private DefaultTableModel modelo;
-    private JButton agregar, modificar, eliminar, refrescar;
-    
+    private JButton agregar, modificar;
+
     private Connection conexion;
     private int usuarioId;
     private JFrame principal;
-    
 
     public GestionProgramas(JFrame principal, Connection conexion, int usuarioId) {
-        super(principal,"Gestión de Programas",true);
+        super(principal, "Gestión de Programas", true);
         this.principal = principal;
         this.conexion = conexion;
         this.usuarioId = usuarioId;
 
-        //Recursos.cargarIcono(this, 64, 64);
-        
-        //setTitle("Gestión de Costos");
         setSize(900, 400);
         setLocationRelativeTo(principal);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        initComponents();
+        inicio();
         cargarDatos();
     }
 
-    private void initComponents() {
+    private void inicio() {
         setLayout(new BorderLayout());
 
-        // Modelo de la tabla
         modelo = new DefaultTableModel(new String[]{
-            "ID","Proyecto_ID", "Descripcion", "Complejidad","Costo Total", "Usuario"
+                "ID", "Proyecto_ID", "Proyecto", "Descripción", "Complejidad", "Costo Total", "Usuarios"
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Solo se pueden editar columnas específicas
                 return false;
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 0 || columnIndex == 1) return Integer.class;
+                if (columnIndex == 5) return Double.class;
+                return String.class;
             }
         };
 
-        // Configuración de la tabla
         tabla = new JTable(modelo);
-        // Ocultar la columna Proyecto_ID
-        tabla.getColumnModel().getColumn(1).setMinWidth(0);
-        tabla.getColumnModel().getColumn(1).setMaxWidth(0);
-        tabla.getColumnModel().getColumn(1).setWidth(0);
-        // Usuario visible
-        tabla.getColumnModel().getColumn(9).setPreferredWidth(150);
+        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tabla.setAutoCreateRowSorter(true);
+
+        TableColumnModel cm = tabla.getColumnModel();
+        if (cm.getColumnCount() > 1) {
+            TableColumn colProyectoId = cm.getColumn(1);
+            colProyectoId.setMinWidth(0);
+            colProyectoId.setMaxWidth(0);
+            colProyectoId.setPreferredWidth(0);
+        }
+
+        try {
+            if (cm.getColumnCount() > 6) cm.getColumn(6).setPreferredWidth(200);
+            if (cm.getColumnCount() > 2) cm.getColumn(2).setPreferredWidth(200);
+            if (cm.getColumnCount() > 3) cm.getColumn(3).setPreferredWidth(300);
+        } catch (Exception ex) { /* no crítico */ }
 
         add(new JScrollPane(tabla), BorderLayout.CENTER);
 
-        // Panel de botones
         JPanel panelBotones = new JPanel();
         agregar = new JButton("Agregar");
-        modificar = new JButton("Guardar Cambios");
-        eliminar = new JButton("Eliminar");
-        refrescar = new JButton("Refrescar");
+        modificar = new JButton("Modificar"); // antes "Guardar Cambios"
 
         agregar.addActionListener(this);
         modificar.addActionListener(this);
-        eliminar.addActionListener(this);
-        refrescar.addActionListener(this);
 
         panelBotones.add(agregar);
         panelBotones.add(modificar);
-        panelBotones.add(eliminar);
-        panelBotones.add(refrescar);
 
         add(panelBotones, BorderLayout.SOUTH);
     }
 
-    
-     //Carga los datos desde la base de datos en la tabla.
+    /**
+     * Carga datos desde la base de datos y los muestra en la tabla.
+     */
     public void cargarDatos() {
         modelo.setRowCount(0);
-        
-        String sql = """
-                     SELECT  c.id, p.id AS proyecto_id, p.descripcion co.nivel,
-                     c.costo_proyecto,
-                     CONCAT(u.nombre, ' ', u.apellido) AS usuario
-                     FROM costos c
-                     LEFT JOIN proyecto p ON c.proyecto_id = p.id
-                     LEFT JOIN usuarios u ON c.usuarios_id = u.id
-                     LEFT JOIN complejidad co ON p.complejidad_id = co.id
-            """;
+
+        if (conexion == null) {
+            JOptionPane.showMessageDialog(this, "Sin conexión a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Cursor prev = getCursor();
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        modificar.setEnabled(false);
+        agregar.setEnabled(false);
+
+        String sql =
+                "SELECT c.id AS costo_id, " +
+                "       p.id AS proyecto_id, " +
+                "       p.nombre_proyecto, " +
+                "       p.descripcion, " +
+                "       COALESCE(co.nivel, '') AS complejidad, " +
+                "       COALESCE(c.costo_proyecto, 0) AS costo_proyecto, " +
+                "       COALESCE(GROUP_CONCAT(DISTINCT CONCAT(u.nombre, ' ', u.apellido) SEPARATOR ', '), '') AS usuarios " +
+                "FROM costos c " +
+                "LEFT JOIN proyecto p ON c.proyecto_id = p.id " +
+                "LEFT JOIN complejidad co ON p.complejidad_id = co.id " +
+                "LEFT JOIN asignacion_proyecto ap ON ap.proyecto_id = p.id " +
+                "LEFT JOIN usuarios u ON ap.usuarios_id = u.id " +
+                "GROUP BY c.id, p.id, p.nombre_proyecto, p.descripcion, co.nivel, c.costo_proyecto " +
+                "ORDER BY p.nombre_proyecto ASC";
+
         try (PreparedStatement ps = conexion.prepareStatement(sql);
-            //ps.setInt(1, usuarioId);
-            ResultSet rs = ps.executeQuery()){
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 modelo.addRow(new Object[]{
-                    rs.getInt("id"),
-                    rs.getInt("proyecto_id"),
-                    rs.getString("proyecto"),
-                    //rs.getInt("cantidad_programadores"),
-                    rs.getString("nombre_modulo"),
-                    rs.getString("complejidad"),
-                    rs.getDouble("horas_estimadas"),
-                    rs.getDouble("costo_por_hora"),
-                    rs.getDouble("costo_total"),
-                    rs.getString("usuario")
+                        rs.getInt("costo_id"),
+                        rs.getInt("proyecto_id"),
+                        rs.getString("nombre_proyecto"),
+                        rs.getString("descripcion"),
+                        rs.getString("complejidad"),
+                        rs.getDouble("costo_proyecto"),
+                        rs.getString("usuarios")
                 });
             }
+
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error al cargar datos: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al cargar datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            modificar.setEnabled(true);
+            agregar.setEnabled(true);
+            setCursor(prev);
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == refrescar) {
-            cargarDatos();
-        }
-
         if (e.getSource() == agregar) {
             IngresoProyecto ip = new IngresoProyecto(principal, conexion, usuarioId, this);
-            //setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-            //ip.setAlwaysOnTop(true);
             ip.setLocationRelativeTo(this);
             ip.setVisible(true);
         }
 
         if (e.getSource() == modificar) {
-            guardarCambios();
-        }
-
-        if (e.getSource() == eliminar) {
-            eliminarRegistro();
+            abrirEditorProyecto();
         }
     }
 
-    private void guardarCambios() {
-        try {
-            for (int i = 0; i < modelo.getRowCount(); i++) {
-                int id = (int) modelo.getValueAt(i, 0);
-                int cantidad =  Integer.parseInt(modelo.getValueAt(i, 3).toString());
-                String modulo = (String) modelo.getValueAt(i, 4);
-                String complejidad = (String) modelo.getValueAt(i, 5);
-                double horas = Double.parseDouble(modelo.getValueAt(i, 6).toString());
-                double costoHora = Double.parseDouble(modelo.getValueAt(i, 7).toString());
-
-                String sql = "UPDATE costos SET nombre_modulo=?, complejidad=?, cantidad_programadores=?, horas_estimadas=?, costo_por_hora=? WHERE id=?";
-                PreparedStatement ps = conexion.prepareStatement(sql);
-                ps.setString(1, modulo);
-                ps.setString(2, complejidad);
-                ps.setInt(3, cantidad);
-                ps.setDouble(4, horas);
-                ps.setDouble(5, costoHora);
-                ps.setInt(6, id);
-                ps.executeUpdate();
-            }
-            JOptionPane.showMessageDialog(null, "Cambios guardados correctamente");
-            cargarDatos();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error al guardar cambios: " + ex.getMessage());
+    /**
+     * Abre la ventana EditarProyecto si la fila está seleccionada y el usuario está asignado.
+     */
+    private void abrirEditorProyecto() {
+        int filaVista = tabla.getSelectedRow();
+        if (filaVista < 0) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un proyecto en la tabla para modificarlo.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    }
 
-    private void eliminarRegistro() {
-        int fila = tabla.getSelectedRow();
-        if (fila >= 0) {
-            int costoId = (int) modelo.getValueAt(fila, 0);
-            int proyectoId = (int) modelo.getValueAt(fila, 1);
-            try {
-                // Eliminar el costo
-                String sqlCosto = "DELETE FROM costos WHERE id=?";
-                PreparedStatement psCosto = conexion.prepareStatement(sqlCosto);
-                psCosto.setInt(1, costoId);
-                psCosto.executeUpdate();
+        int filaModelo = tabla.convertRowIndexToModel(filaVista);
+        int proyectoId = (int) modelo.getValueAt(filaModelo, 1);
+        String nombreProyecto = String.valueOf(modelo.getValueAt(filaModelo, 2));
 
-                // Verificar si el proyecto tiene otros costos
-                String sqlVerificar = "SELECT COUNT(*) AS total FROM costos WHERE proyecto_id=?";
-                PreparedStatement psVerificar = conexion.prepareStatement(sqlVerificar);
-                psVerificar.setInt(1, proyectoId);
-                ResultSet rs = psVerificar.executeQuery();
-                if (rs.next() && rs.getInt("total") == 0) {
-                    // Si no hay más costos, eliminar proyecto
-                    String sqlEliminarProyecto = "DELETE FROM proyectos WHERE id=?";
-                    PreparedStatement psEliminarProyecto = conexion.prepareStatement(sqlEliminarProyecto);
-                    psEliminarProyecto.setInt(1, proyectoId);
-                    psEliminarProyecto.executeUpdate();
+        // Verificar si el usuario actual está asignado al proyecto (es encargado)
+        String checkSql = "SELECT COUNT(*) AS total FROM asignacion_proyecto WHERE proyecto_id = ? AND usuarios_id = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(checkSql)) {
+            ps.setInt(1, proyectoId);
+            ps.setInt(2, usuarioId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int total = rs.getInt("total");
+                    if (total == 0) {
+                        JOptionPane.showMessageDialog(this, "No eres el usuario encargado de este proyecto. Solo el encargado puede modificarlo.", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 }
-
-                cargarDatos();
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Selecciona una fila para eliminar");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al verificar permisos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        // Abrir la ventana de edición pasando conexion, proyectoId y usuarioId
+        EditarProyecto ep = new EditarProyecto(this, conexion, proyectoId, usuarioId);
+        ep.setLocationRelativeTo(this);
+        ep.setVisible(true);
+
+        // Al volver, recargamos datos
+        cargarDatos();
     }
 }
+

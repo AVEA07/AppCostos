@@ -30,7 +30,7 @@ public class AdministrarUsuario  extends JDialog implements ActionListener{
         this.conexion = conexion;
         this.usuarioId = usuarioId;
         //setTitle("Inicio de Sesión");
-        setSize(700, 430);
+        setSize(650, 400);
         setLocationRelativeTo(principal);
         setResizable(false);
         
